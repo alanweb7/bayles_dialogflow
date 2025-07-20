@@ -2,7 +2,7 @@
 // CONSIDERE FAZER UMA COLABORAÇÃO VIA PIX.
 // CHAVE PIX - 85985282207
 const makeWaSocket = require('@whiskeysockets/baileys').default
-const { makeBusinessSocket } = require('@whiskeysockets/baileys').default;
+// const { makeBusinessSocket } = require('@whiskeysockets/baileys').default;
 const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('@whiskeysockets/baileys')
 
 const Boom = require('@hapi/boom');
@@ -364,7 +364,7 @@ const Connection = async () => {
 async function startSock() {
    const { state, saveCreds } = await useMultiFileAuthState('Sessions/user1');
 
-   const sock = makeBusinessSocket({
+   const sock = makeWaSocket({
       auth: state,
       printQRInTerminal: true,
    });
