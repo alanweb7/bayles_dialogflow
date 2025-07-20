@@ -15,6 +15,8 @@ const server = http.createServer(app);
 const Path = 'Sessions';
 const request = require('request')
 
+const qrcode = require('qrcode-terminal');
+
 const fs = require('fs');
 app.use(express.json());
 app.use(express.urlencoded({
@@ -72,7 +74,8 @@ async function executeQueries(projectId, sessionId, queries, languageCode) {
 const Update = (sock) => {
    sock.on('connection.update', ({ connection, lastDisconnect, qr }) => {
       if (qr) {
-         console.log('CHATBOT - Qrcode: ', qr);
+         console.log('CHATBOT - Qrcode: ');
+         qrcode.generate(qr, { small: true });
       };
       if (connection === 'close') {
          const Reconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
