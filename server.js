@@ -15,7 +15,7 @@ const app = express();
 const server = http.createServer(app);
 const Path = 'Sessions';
 const request = require('request')
- 
+
 const qrcode = require('qrcode-terminal');
 
 const fs = require('fs');
@@ -74,7 +74,7 @@ async function executeQueries(projectId, sessionId, queries, languageCode) {
    }
 } ////FIM DIALOGFLOW
 
-const Update = (sock) => {
+const Update1 = (sock) => {
    sock.on('connection.update', ({ connection, lastDisconnect, qr }) => {
       if (qr) {
          console.log('CHATBOT - Qrcode: ');
@@ -86,10 +86,6 @@ const Update = (sock) => {
          console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ` + DisconnectReason.loggedOut.toString());
          if (Reconnect === false) {
             fs.rmSync(Path, { recursive: true, force: true });
-            // const removeAuth = Path
-            // unlink(removeAuth, err => {
-            //    if (err) throw err
-            // })
          }
       }
       if (connection === 'open') {
@@ -98,7 +94,7 @@ const Update = (sock) => {
    })
 }
 
-const Connection = async () => {
+const Connection1 = async () => {
    const { version } = await fetchLatestBaileysVersion();
 
    if (!existsSync(Path)) {
@@ -185,167 +181,7 @@ const Connection = async () => {
                   "1 - CONTINUAR \n" +
                   "2 - SAIR"
             })
-            return ;
-         }
-
-
-
-         //--------------------
-
-         // MENSAGEM DE BOAS VINDAS (TEXO COM IMAGEM)
-         if (textResponse === 'Iniciando seu atendimento...') {
-            await SendMessage(jid, {
-               image: {
-                  url: './image/robert.jpg'
-               },
-               caption: `Olá ${nomeUsuario}, ${saudacao} \nSeja muito bem-vindo ao assistente virtual do *Canal eConhecimento*.\n\n` +
-                  "Digite o *número* referente a opção desejada:\n\n" +
-                  "*1* - Suporte\n" +
-                  "*2* - Financeiro\n" +
-                  "*3* - Cursos Online\n" +
-                  "*4* - Perguntas frequentes\n" +
-                  "*5* - Redes sociais\n" +
-                  "*6* - Parceria",
-               mimeType: 'image.jpg'
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-
-         //--------------------
-
-         // MENSAGEM DE TEXO COMUM
-         if (textResponse === 'Enviando texto comum...') {
-            await SendMessage(jid, {
-               text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
-                  "1 - CONTINUAR \n" +
-                  "2 - SAIR"
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM COM ÁUDIO
-         if (textResponse === 'Envio de áudio...') {
-            await SendMessage(jid, {
-               audio: {
-                  url: './image/teste.ogg'
-               },
-               caption: 'Descrição do áudio',
-               mimetype: 'audio/ogg'
-
-            });
-            await SendMessage(jid, {
-               text: `Olá *${nomeUsuario}* \n Essa é uma mensagem de áudio\n\n ` +
-                  "1 - CONTINUAR \n" +
-                  "2 - SAIR"
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM COM VÍDEO
-         if (textResponse === 'Envio de vídeo...') {
-            await SendMessage(jid, {
-               video: {
-                  url: './image/video.mp4'
-               },
-               caption: 'Esse é um exemplo de vídeo',
-               gifPlayback: true
-
-            });
-            await SendMessage(jid, {
-               text: `Olá *${nomeUsuario}* \n Essa é uma mensagem de vídeo\n\n ` +
-                  "1 - CONTINUAR \n" +
-                  "2 - SAIR"
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM COM DOCUMENTO PDF
-         if (textResponse === 'Aqui está um PDF 👇🏼😉') {
-            await SendMessage(jid, {
-               document: {
-                  url: './image/Divulg-pro.pdf'
-               },
-               fileName: '/Divulg-pro.pdf',
-               caption:
-                  "Tabela de valores",
-               mimetype: 'application/PDF'
-
-            })
-
-            await SendMessage(jid, {
-               text: //`Olá *${nomeUsuario}* \nEssa é uma mensagem de vídeo\n\n`+
-                  //"1 - CONTINUAR\n" +
-                  "*0* - Voltar ao menu"
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM DE LOCALIZAÇÃO
-         if (textResponse === 'Enviando Localização, Aguarde!...') {
-            await SendMessage(jid, { location: { degreesLatitude: -2.917264183502438, degreesLongitude: -41.75231474744193 } }
-            )
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM DE CONTATO
-         if (textResponse === 'Aqui está o contato do Marcos Monteiro 👇🏼😉') {
-            const vcard = 'BEGIN:VCARD\n' // metadata of the contact card
-               + 'VERSION:3.0\n'
-               + 'FN:Marcos Monteiro\n' // full name
-               + 'ORG:Marcos Monteiro;\n' // the organization of the contact
-               + 'TEL;type=CELL;type=VOICE;waid=5585985282207:+55 85 98528 2207\n' // WhatsApp ID + phone number
-               + 'END:VCARD';
-
-            await SendMessage(jid, {
-               contacts: {
-                  displayName: 'Marcos Monteiro',
-                  contacts: [{ vcard }]
-
-               }
-
-            });
-
-            await SendMessage(jid, {
-               text: '*0* - Voltar ao menu'
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err));
-
+            return;
          }
 
 
@@ -355,7 +191,69 @@ const Connection = async () => {
 
 };
 
-Connection()
+// Connection()
+
+
+
+const fs = require('fs');
+const qrcode = require('qrcode-terminal');
+const { DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
+const path = require('path');
+
+// Caminho onde as credenciais serão armazenadas
+const SESSION_PATH = './Sessions/user1'; // pode ser dinâmico para múltiplas sessões
+
+// Função para iniciar conexão
+async function Connection() {
+   const { state, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
+
+   const sock = makeWASocket({
+      auth: state,
+      printQRInTerminal: false,
+      logger: P({ level: 'silent' })
+   });
+
+   // Atualiza credenciais após qualquer mudança
+   sock.ev.on('creds.update', saveCreds);
+
+   // Atualiza conexão (sua função atualizada aqui)
+   Update(sock);
+}
+
+// Sua função Update melhorada
+const Update = (sock) => {
+   sock.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+      if (qr) {
+         console.log('CHATBOT - Qrcode:');
+         qrcode.generate(qr, { small: true });
+      }
+
+      if (connection === 'close') {
+         const statusCode = lastDisconnect?.error?.output?.statusCode;
+         const Reconnect = statusCode !== DisconnectReason.loggedOut;
+
+         console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ${statusCode}`);
+
+         if (Reconnect) {
+            console.log('Tentando reconectar...');
+            Connection();
+         } else {
+            console.log('Deslogado permanentemente. Limpando sessão...');
+            fs.rmSync(SESSION_PATH, { recursive: true, force: true });
+         }
+      }
+
+      if (connection === 'open') {
+         console.log('CHATBOT - CONECTADO');
+      }
+   });
+};
+
+module.exports = { Connection };
+
+
+
+Connection();
 
 server.listen(port, function () {
    console.log('CHATBOT - Servidor rodando na porta: ' + port);
