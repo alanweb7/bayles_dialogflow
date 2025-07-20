@@ -24,7 +24,7 @@ const fs = require('fs');
 // const fs = require('fs');
 // const qrcode = require('qrcode-terminal');
 const makeWaSocket = require('@whiskeysockets/baileys').default
-const { DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
+const { delay, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const path = require('path');
 
 // Caminho onde as credenciais serão armazenadas
