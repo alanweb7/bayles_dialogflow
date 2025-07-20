@@ -123,10 +123,10 @@ const Connection = async () => {
 
    const SendMessage = async (jid, msg) => {
       await sock.presenceSubscribe(jid)
-      await delay(1500)
-      await sock.sendPresenceUpdate('composing', jid)
-      await delay(1000)
-      await sock.sendPresenceUpdate('paused', jid)
+      // await delay(1500)
+      // await sock.sendPresenceUpdate('composing', jid)
+      // await delay(1000)
+      // await sock.sendPresenceUpdate('paused', jid)
       return await sock.sendMessage(jid, msg)
    };
 
