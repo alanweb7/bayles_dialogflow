@@ -73,10 +73,10 @@ async function executeQueries(projectId, sessionId, queries, languageCode) {
 
 const Update = (sock) => {
    sock.on('connection.update', ({ connection, lastDisconnect, qr }) => {
-      if (qr) {
-         console.log('CHATBOT - Qrcode: ');
-         qrcode.generate(qr, { small: true });
-      };
+      // if (qr) {
+      //    console.log('CHATBOT - Qrcode: ');
+      //    qrcode.generate(qr, { small: true });
+      // };
       if (connection === 'close') {
          const Reconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
          if (Reconnect) Connection()
@@ -154,7 +154,7 @@ const Connection = async () => {
       const msg = messages[0]
       const jid = msg.key.remoteJid
       const nomeUsuario = msg.pushName
-      const saudacao = welcome(date)
+      const saudacao = await welcome(date);
       if ((jid) && !msg.key.fromMe && jid !== 'status@broadcast') {
          const messageTypes = Object.keys(msg.message);
          const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
