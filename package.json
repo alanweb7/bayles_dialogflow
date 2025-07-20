@@ -32,7 +32,8 @@
     "amqplib": "^0.10.5",
     "audio-decode": "^2.2.3",
     "axios": "^1.7.9",
-    "baileys": "github:EvolutionAPI/Baileys"
+    "baileys": "github:EvolutionAPI/Baileys",
+    "jimp": "^0.16.13"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
