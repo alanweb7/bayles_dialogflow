@@ -356,75 +356,7 @@ const Connection = async () => {
 
 };
 
-// Connection()
-
-
-// outra forma de conexão
-
-async function startSock() {
-   const { state, saveCreds } = await useMultiFileAuthState('Sessions/user1');
-
-   const sock = makeWaSocket({
-      auth: state,
-      printQRInTerminal: true,
-   });
-
-   sock.ev.on('creds.update', saveCreds);
-
-   sock.ev.on('connection.update', (update) => {
-      const { connection, lastDisconnect, qr } = update;
-
-      if (qr) {
-         console.log('CHATBOT - Qrcode: ');
-         qrcode.generate(qr, { small: true });
-      };
-
-      if (connection === 'close') {
-         const shouldReconnect = Boom.isBoom(lastDisconnect?.error)
-            ? lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut
-            : true;
-
-         console.log('connection closed due to', lastDisconnect.error, ', reconnecting', shouldReconnect);
-
-         if (shouldReconnect) {
-            startSock();
-         }
-      }
-
-
-
-
-      if (connection === 'open') {
-         console.log('connection opened');
-      }
-   });
-
-   sock.ev.on('messages.upsert', async ({ messages, type }) => {
-      const msg = messages[0];
-      if (!msg.message) return;
-
-      const from = msg.key.remoteJid;
-      const text = msg.message.conversation || msg.message.extendedTextMessage?.text;
-
-      const jid = msg.key.remoteJid
-      const nomeUsuario = msg.pushName
-      if ((jid) && !msg.key.fromMe && jid !== 'status@broadcast') {
-         const messageTypes = Object.keys(msg.message);
-         const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
-
-         let textResponse = "oie tudo bom?";
-         console.log(`Mensagem recebida de ${from}: ${text}`);
-
-         await sock.sendMessage(from, { text: 'Recebido com sucesso!' });
-
-      }
-
-   });
-
-   return sock;
-}
-
-startSock();
+Connection()
 
 server.listen(port, function () {
    console.log('CHATBOT - Servidor rodando na porta: ' + port);
