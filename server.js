@@ -361,6 +361,11 @@ const Connection = async () => {
 // outra forma de conexão
 
 async function startSock() {
+
+   if (!existsSync(Path)) {
+      mkdirSync(Path, { recursive: true });
+   }
+
    const { state, saveCreds } = await useMultiFileAuthState('Sessions/user1');
 
    const sock = makeWaSocket({
