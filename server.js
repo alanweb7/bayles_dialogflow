@@ -1,6 +1,6 @@
-const makeWaSocket = require('baileys').default
+// const makeWaSocket = require('baileys').default
 // const { makeBusinessSocket } = require('@whiskeysockets/baileys').default;
-const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('baileys')
+// const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('baileys')
 
 const Boom = require('@hapi/boom');
 
@@ -195,8 +195,8 @@ const Connection1 = async () => {
 
 
 
-const fs = require('fs');
-const qrcode = require('qrcode-terminal');
+// const fs = require('fs');
+// const qrcode = require('qrcode-terminal');
 const { DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
 const path = require('path');
 
