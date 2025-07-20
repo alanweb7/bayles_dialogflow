@@ -135,7 +135,7 @@ const Connection = async () => {
    ////SAUDAÇÃO
    let date = new Date();
    let data = date.toLocaleString('pt-BR', { timeZone: "America/Sao_Paulo", hour: 'numeric', hour12: false });
-   
+
    function welcome(date) {
       if (data >= 5 && data < 12) {
          return 'bom dia!'
@@ -159,17 +159,25 @@ const Connection = async () => {
          const messageTypes = Object.keys(msg.message);
          const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
 
-         let textResponse = "";
+         let textResponse = "oie tudo bom?";
 
-         if (messageType === "extendedTextMessage") {
-            textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.extendedTextMessage.text)], 'pt-BR');
+         // if (messageType === "extendedTextMessage") {
+         //    textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.extendedTextMessage.text)], 'pt-BR');
 
-         } else if (messageType === "conversation") {
-            textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.conversation)], 'pt-BR');
+         // } else if (messageType === "conversation") {
+         //    textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.conversation)], 'pt-BR');
 
-         }
+         // }
 
          await SendMessage(jid, { text: textResponse });
+
+
+         await SendMessage(jid, {
+            text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
+               "1 - CONTINUAR \n" +
+               "2 - SAIR"
+         })
+
 
          //--------------------
 
