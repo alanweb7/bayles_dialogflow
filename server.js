@@ -2,7 +2,6 @@
 // CONSIDERE FAZER UMA COLABORAÇÃO VIA PIX.
 // CHAVE PIX - 85985282207
 const {
-  default: makeWASocket,
   DisconnectReason,
   useMultiFileAuthState,
   fetchLatestBaileysVersion,
@@ -11,6 +10,11 @@ const {
   isJidStatusBroadcast,
   isJidNewsletter,
 } = require("baileys");
+
+const {
+  makeWASocket
+} = require("baileys").default;
+
 
 const dialogflow = require('@google-cloud/dialogflow');
 const P = require('pino')
