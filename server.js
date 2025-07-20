@@ -409,13 +409,12 @@ async function startSock() {
          const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
 
          let textResponse = "oie tudo bom?";
+         console.log(`Mensagem recebida de ${from}: ${text}`);
+
+         await sock.sendMessage(from, { text: 'Recebido com sucesso!' });
 
       }
 
-
-      console.log(`Mensagem recebida de ${from}: ${text}`);
-
-      // await sock.sendMessage(from, { text: 'Recebido com sucesso!' });
    });
 
    return sock;
