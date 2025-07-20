@@ -102,7 +102,7 @@ const Connection = async () => {
    //    mkdirSync(Path, { recursive: true });
    // }
 
-   // const { state, saveCreds } = await useMultiFileAuthState(Path);
+   const { state, saveCreds } = await useMultiFileAuthState(Path);
 
    const config = {
       auth: state,
