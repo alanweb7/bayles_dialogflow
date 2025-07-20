@@ -98,11 +98,11 @@ const Update = (sock) => {
 const Connection = async () => {
    const { version } = await fetchLatestBaileysVersion();
 
-   if (!existsSync(Path)) {
-      mkdirSync(Path, { recursive: true });
-   }
+   // if (!existsSync(Path)) {
+   //    mkdirSync(Path, { recursive: true });
+   // }
 
-   const { state, saveCreds } = await useMultiFileAuthState(Path);
+   // const { state, saveCreds } = await useMultiFileAuthState(Path);
 
    const config = {
       auth: state,
@@ -115,14 +115,14 @@ const Connection = async () => {
       },
    };
 
-   const sock = makeWaSocket(config, { auth: state });
+   const sock = makeWaSocket(config);
 
    Update(sock.ev);
 
-   sock.ev.on('creds.update', saveCreds);
+   // sock.ev.on('creds.update', saveCreds);
 
    const SendMessage = async (jid, msg) => {
-      await sock.presenceSubscribe(jid)
+      // await sock.presenceSubscribe(jid)
       // await delay(1500)
       // await sock.sendPresenceUpdate('composing', jid)
       // await delay(1000)
