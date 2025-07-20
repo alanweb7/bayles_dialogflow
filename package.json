@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Bot WhatsApp integrado ao Dialogflow e Baileys",
   "main": "server.js",
-  "type": "module",
+  "type": "commonjs",
   "license": "ISC",
   "author": {
     "name": "Marcos Monteiro",
