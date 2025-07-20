@@ -21,6 +21,15 @@ const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 
 
+// const fs = require('fs');
+// const qrcode = require('qrcode-terminal');
+const makeWaSocket = require('@whiskeysockets/baileys').default
+const { DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
+const path = require('path');
+
+// Caminho onde as credenciais serão armazenadas
+const SESSION_PATH = './Sessions/user1'; // pode ser dinâmico para múltiplas sessões
+
 app.use(express.json());
 app.use(express.urlencoded({
    extended: true
@@ -102,7 +111,7 @@ const Update = (sock) => {
    });
 };
 
-const Connection = async () => {
+async function Connection(){
    const { version } = await fetchLatestBaileysVersion();
 
    if (!existsSync(Path)) {
@@ -206,17 +215,8 @@ const Connection = async () => {
 
 
 
-// const fs = require('fs');
-// const qrcode = require('qrcode-terminal');
-const makeWaSocket = require('@whiskeysockets/baileys').default
-const { DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
-const path = require('path');
-
-// Caminho onde as credenciais serão armazenadas
-const SESSION_PATH = './Sessions/user1'; // pode ser dinâmico para múltiplas sessões
-
 // Função para iniciar conexão
-async function Connection() {
+async function Connection1() {
    const { state, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
 
    const sock = makeWASocket({
