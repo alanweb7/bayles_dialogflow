@@ -39,7 +39,13 @@ async function startSock() {
 
   sock.ev.on('creds.update', saveCreds);
 
-  sock.ev.on('connection.update', (update) => {
+  sock.ev.on('connection.update', (update, qr) => {
+
+         if (qr) {
+         console.log('CHATBOT - Qrcode: ');
+         qrcode.generate(qr, { small: true });
+      };
+
     const { connection, lastDisconnect } = update;
 
     if (connection === 'close') {
