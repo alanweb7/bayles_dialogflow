@@ -172,14 +172,20 @@ const Connection = async () => {
 
          // }
 
-         await SendMessage(jid, { text: textResponse });
+
+         if (textResponse) {
+
+            await SendMessage(jid, { text: textResponse });
 
 
-         await SendMessage(jid, {
-            text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
-               "1 - CONTINUAR \n" +
-               "2 - SAIR"
-         })
+            await SendMessage(jid, {
+               text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
+                  "1 - CONTINUAR \n" +
+                  "2 - SAIR"
+            })
+            return false;
+         }
+
 
 
          //--------------------
