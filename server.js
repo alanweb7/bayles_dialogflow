@@ -74,27 +74,35 @@ async function executeQueries(projectId, sessionId, queries, languageCode) {
    }
 } ////FIM DIALOGFLOW
 
-const Update1 = (sock) => {
-   sock.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+const Update = (sock) => {
+   sock.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
       if (qr) {
-         console.log('CHATBOT - Qrcode: ');
+         console.log('CHATBOT - Qrcode:');
          qrcode.generate(qr, { small: true });
-      };
+      }
+
       if (connection === 'close') {
-         const Reconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
-         if (Reconnect) Connection()
-         console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ` + DisconnectReason.loggedOut.toString());
-         if (Reconnect === false) {
-            fs.rmSync(Path, { recursive: true, force: true });
+         const statusCode = lastDisconnect?.error?.output?.statusCode;
+         const Reconnect = statusCode !== DisconnectReason.loggedOut;
+
+         console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ${statusCode}`);
+
+         if (Reconnect) {
+            console.log('Tentando reconectar...');
+            Connection();
+         } else {
+            console.log('Deslogado permanentemente. Limpando sessão...');
+            fs.rmSync(SESSION_PATH, { recursive: true, force: true });
          }
       }
-      if (connection === 'open') {
-         console.log('CHATBOT - CONECTADO')
-      }
-   })
-}
 
-const Connection1 = async () => {
+      if (connection === 'open') {
+         console.log('CHATBOT - CONECTADO');
+      }
+   });
+};
+
+const Connection = async () => {
    const { version } = await fetchLatestBaileysVersion();
 
    if (!existsSync(Path)) {
@@ -173,15 +181,18 @@ const Connection1 = async () => {
 
          if (textResponse) {
 
-            await SendMessage(jid, { text: textResponse });
+            console.log("Mensagem recebida de : ", `${jid} :: ${msg}`);
+
+            
+            // await SendMessage(jid, { text: textResponse });
 
 
-            await SendMessage(jid, {
-               text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
-                  "1 - CONTINUAR \n" +
-                  "2 - SAIR"
-            })
-            return;
+            // await SendMessage(jid, {
+            //    text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
+            //       "1 - CONTINUAR \n" +
+            //       "2 - SAIR"
+            // })
+            // return;
          }
 
 
@@ -197,6 +208,7 @@ const Connection1 = async () => {
 
 // const fs = require('fs');
 // const qrcode = require('qrcode-terminal');
+const makeWaSocket = require('@whiskeysockets/baileys').default
 const { DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
 const path = require('path');
 
@@ -220,38 +232,8 @@ async function Connection() {
    Update(sock);
 }
 
-// Sua função Update melhorada
-const Update = (sock) => {
-   sock.ev.on('connection.update', ({ connection, lastDisconnect, qr }) => {
-      if (qr) {
-         console.log('CHATBOT - Qrcode:');
-         qrcode.generate(qr, { small: true });
-      }
-
-      if (connection === 'close') {
-         const statusCode = lastDisconnect?.error?.output?.statusCode;
-         const Reconnect = statusCode !== DisconnectReason.loggedOut;
-
-         console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ${statusCode}`);
-
-         if (Reconnect) {
-            console.log('Tentando reconectar...');
-            Connection();
-         } else {
-            console.log('Deslogado permanentemente. Limpando sessão...');
-            fs.rmSync(SESSION_PATH, { recursive: true, force: true });
-         }
-      }
-
-      if (connection === 'open') {
-         console.log('CHATBOT - CONECTADO');
-      }
-   });
-};
 
 module.exports = { Connection };
-
-
 
 Connection();
 
