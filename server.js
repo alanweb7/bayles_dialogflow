@@ -402,9 +402,20 @@ async function startSock() {
       const from = msg.key.remoteJid;
       const text = msg.message.conversation || msg.message.extendedTextMessage?.text;
 
+      const jid = msg.key.remoteJid
+      const nomeUsuario = msg.pushName
+      if ((jid) && !msg.key.fromMe && jid !== 'status@broadcast') {
+         const messageTypes = Object.keys(msg.message);
+         const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
+
+         let textResponse = "oie tudo bom?";
+
+      }
+
+
       console.log(`Mensagem recebida de ${from}: ${text}`);
 
-      await sock.sendMessage(from, { text: 'Recebido com sucesso!' });
+      // await sock.sendMessage(from, { text: 'Recebido com sucesso!' });
    });
 
    return sock;
