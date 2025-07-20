@@ -1,18 +1,8 @@
 // CONTRIBUA COM O CONHECIMENTO...
 // CONSIDERE FAZER UMA COLABORAÇÃO VIA PIX.
 // CHAVE PIX - 85985282207
-const {
-  DisconnectReason,
-  useMultiFileAuthState,
-  fetchLatestBaileysVersion,
-  isJidBroadcast,
-  makeCacheableSignalKeyStore,
-  isJidStatusBroadcast,
-  isJidNewsletter,
-} = require('@whiskeysockets/baileys');
-
-const   makeWASocket  = require("@whiskeysockets/baileys");
-
+const makeWaSocket = require('@whiskeysockets/baileys').default
+const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('@whiskeysockets/baileys')
 
 const dialogflow = require('@google-cloud/dialogflow');
 const P = require('pino')
