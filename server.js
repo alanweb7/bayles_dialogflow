@@ -73,10 +73,10 @@ async function executeQueries(projectId, sessionId, queries, languageCode) {
 
 const Update = (sock) => {
    sock.on('connection.update', ({ connection, lastDisconnect, qr }) => {
-      // if (qr) {
-      //    console.log('CHATBOT - Qrcode: ');
-      //    qrcode.generate(qr, { small: true });
-      // };
+      if (qr) {
+         console.log('CHATBOT - Qrcode: ');
+         qrcode.generate(qr, { small: true });
+      };
       if (connection === 'close') {
          const Reconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
          if (Reconnect) Connection()
