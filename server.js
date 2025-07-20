@@ -98,9 +98,9 @@ const Update = (sock) => {
 const Connection = async () => {
    const { version } = await fetchLatestBaileysVersion();
 
-   // if (!existsSync(Path)) {
-   //    mkdirSync(Path, { recursive: true });
-   // }
+   if (!existsSync(Path)) {
+      mkdirSync(Path, { recursive: true });
+   }
 
    const { state, saveCreds } = await useMultiFileAuthState(Path);
 
@@ -115,18 +115,18 @@ const Connection = async () => {
       },
    };
 
-   const sock = makeWaSocket(config);
+   const sock = makeWaSocket(config, { auth: state });
 
    Update(sock.ev);
 
-   // sock.ev.on('creds.update', saveCreds);
+   sock.ev.on('creds.update', saveCreds);
 
    const SendMessage = async (jid, msg) => {
-      // await sock.presenceSubscribe(jid)
-      // await delay(1500)
-      // await sock.sendPresenceUpdate('composing', jid)
-      // await delay(1000)
-      // await sock.sendPresenceUpdate('paused', jid)
+      await sock.presenceSubscribe(jid)
+      await delay(1500)
+      await sock.sendPresenceUpdate('composing', jid)
+      await delay(1000)
+      await sock.sendPresenceUpdate('paused', jid)
       return await sock.sendMessage(jid, msg)
    };
 
@@ -136,13 +136,15 @@ const Connection = async () => {
    let date = new Date();
    let data = date.toLocaleString('pt-BR', { timeZone: "America/Sao_Paulo", hour: 'numeric', hour12: false });
 
-   function welcome(date) {
-      if (data >= 5 && data < 12) {
-         return 'bom dia!'
-      } else if (data >= 12 && data < 18) {
-         return 'boa tarde!'
-      } else if (data >= 18 && data < 23) {
-         return 'boa noite!'
+   function welcome() {
+      const hora = new Date().getHours();
+
+      if (hora >= 5 && hora < 12) {
+         return 'Bom dia!';
+      } else if (hora >= 12 && hora < 18) {
+         return 'Boa tarde!';
+      } else {
+         return 'Boa noite!';
       }
    }
 
@@ -154,7 +156,7 @@ const Connection = async () => {
       const msg = messages[0]
       const jid = msg.key.remoteJid
       const nomeUsuario = msg.pushName
-      const saudacao = await welcome(date);
+      const saudacao = welcome();
       if ((jid) && !msg.key.fromMe && jid !== 'status@broadcast') {
          const messageTypes = Object.keys(msg.message);
          const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
