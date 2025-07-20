@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "Bot WhatsApp integrado ao Dialogflow e Baileys",
   "main": "server.js",
-  "type": "commonjs",
+  "type": "module",
   "license": "ISC",
   "author": {
     "name": "Marcos Monteiro",
     "url": "https://econhecimento.com"
   },
+  
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -34,4 +35,5 @@
   "engines": {
     "node": ">=18.0.0"
   }
+  
 }

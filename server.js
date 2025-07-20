@@ -1,27 +1,28 @@
-// CONTRIBUA COM O CONHECIMENTO...
-// CONSIDERE FAZER UMA COLABORAÇÃO VIA PIX.
-// CHAVE PIX - 85985282207
-const makeWaSocket = require('@whiskeysockets/baileys').default
-// const { makeBusinessSocket } = require('@whiskeysockets/baileys').default;
-const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('@whiskeysockets/baileys')
+import makeWaSocket, {
+  delay,
+  DisconnectReason,
+  fetchLatestBaileysVersion,
+  useMultiFileAuthState
+} from '@whiskeysockets/baileys';
 
-const Boom = require('@hapi/boom');
+import Boom from '@hapi/boom';
+import dialogflow from '@google-cloud/dialogflow';
+import P from 'pino';
+import { unlink, existsSync, mkdirSync } from 'fs';
+import express from 'express';
+import { body, validationResult } from 'express-validator';
+import http from 'http';
+import request from 'request';
+import qrcode from 'qrcode-terminal';
+import fs from 'fs';
 
-const dialogflow = require('@google-cloud/dialogflow');
-const P = require('pino')
-const { unlink, existsSync, mkdirSync } = require('fs')
-const express = require('express');
-const { body, validationResult } = require('express-validator');
-const http = require('http');
 const port = process.env.PORT || 9002;
 const app = express();
 const server = http.createServer(app);
 const Path = 'Sessions';
-const request = require('request')
 
-const qrcode = require('qrcode-terminal');
 
-const fs = require('fs');
+
 app.use(express.json());
 app.use(express.urlencoded({
    extended: true
