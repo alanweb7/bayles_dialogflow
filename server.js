@@ -363,7 +363,7 @@ const Connection = async () => {
 async function startSock() {
    const { state, saveCreds } = await useMultiFileAuthState('Sessions/user1');
 
-   const sock = makeWASocket({
+   const sock = makeWaSocket({
       auth: state,
       printQRInTerminal: true,
    });
