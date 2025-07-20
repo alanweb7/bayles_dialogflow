@@ -378,17 +378,27 @@ async function startSock() {
          qrcode.generate(qr, { small: true });
       };
 
-      if (connection === 'close') {
-         const shouldReconnect = Boom.isBoom(lastDisconnect?.error)
-            ? lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut
-            : true;
+      // if (connection === 'close') {
+      //    const shouldReconnect = Boom.isBoom(lastDisconnect?.error)
+      //       ? lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut
+      //       : true;
 
-         console.log('connection closed due to', lastDisconnect.error, ', reconnecting', shouldReconnect);
+      //    console.log('connection closed due to', lastDisconnect.error, ', reconnecting', shouldReconnect);
 
-         if (shouldReconnect) {
-            startSock();
-         }
+      //    if (shouldReconnect) {
+      //       startSock();
+      //    }
+      // }
+
+      if (
+         connection === 'close' &&
+         lastDisconnect?.error?.output?.payload?.message === 'Stream Errored (conflict)'
+      ) {
+         console.log('Sessão removida remotamente. Apague a pasta da sessão e escaneie novamente.');
       }
+
+
+
 
       if (connection === 'open') {
          console.log('connection opened');
