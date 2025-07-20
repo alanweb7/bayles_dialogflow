@@ -13,7 +13,7 @@ const {
 
 const {
   makeWASocket
-} = require("baileys").default;
+} = require("@whiskeysockets/baileys").default;
 
 
 const dialogflow = require('@google-cloud/dialogflow');
