@@ -5,7 +5,7 @@ import makeWASocket, {
   makeInMemoryStore
 } from '@whiskeysockets/baileys';
 
-import * as P from 'pino';
+import P from 'pino';
 import { Boom } from '@hapi/boom';
 
 const fs = require('fs');
@@ -32,7 +32,8 @@ async function startSock(sessionId = 'default') {
   sock.ev.on('creds.update', saveCreds);
 
   // ✅ Reage a desconexão
-  sock.ev.on('connection.update', (update) => {
+  import { ConnectionState } from '@whiskeysockets/baileys';
+  sock.ev.on('connection.update', (update: Partial<ConnectionState>) => {
     const { connection, lastDisconnect } = update;
     if (connection === 'close') {
       const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
