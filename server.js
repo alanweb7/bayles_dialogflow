@@ -186,7 +186,7 @@ const Connection = async () => {
                   "1 - CONTINUAR \n" +
                   "2 - SAIR"
             })
-            return false;
+            return ;
          }
 
 
