@@ -9,7 +9,7 @@ const {
   makeCacheableSignalKeyStore,
   isJidStatusBroadcast,
   isJidNewsletter,
-} = require("baileys");
+} = require('@whiskeysockets/baileys');
 
 const {
   makeWASocket
