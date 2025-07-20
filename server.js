@@ -383,17 +383,15 @@ async function startSock() {
          qrcode.generate(qr, { small: true });
       };
 
-      // if (connection === 'close') {
-      //    const shouldReconnect = Boom.isBoom(lastDisconnect?.error)
-      //       ? lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut
-      //       : true;
+      if (connection === 'close') {
+         const Reconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
+         if (Reconnect) {
+            startSock()
+            console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ` + DisconnectReason.loggedOut.toString());
+            console.log('connection closed due to', lastDisconnect.error, ', reconnecting', shouldReconnect);
+         }
 
-      //    console.log('connection closed due to', lastDisconnect.error, ', reconnecting', shouldReconnect);
-
-      //    if (shouldReconnect) {
-      //       startSock();
-      //    }
-      // }
+      }
 
       if (
          connection === 'close' &&
