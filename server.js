@@ -83,10 +83,10 @@ const Update = (sock) => {
          console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ` + DisconnectReason.loggedOut.toString());
          if (Reconnect === false) {
             fs.rmSync(Path, { recursive: true, force: true });
-            const removeAuth = Path
-            unlink(removeAuth, err => {
-               if (err) throw err
-            })
+            // const removeAuth = Path
+            // unlink(removeAuth, err => {
+            //    if (err) throw err
+            // })
          }
       }
       if (connection === 'open') {
