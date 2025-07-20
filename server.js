@@ -4,6 +4,8 @@
 const makeWaSocket = require('@whiskeysockets/baileys').default
 const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('@whiskeysockets/baileys')
 
+const Boom = require('@hapi/boom');
+
 const dialogflow = require('@google-cloud/dialogflow');
 const P = require('pino')
 const { unlink, existsSync, mkdirSync } = require('fs')
