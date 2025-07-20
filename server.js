@@ -1,8 +1,8 @@
 // CONTRIBUA COM O CONHECIMENTO...
 // CONSIDERE FAZER UMA COLABORAÇÃO VIA PIX.
 // CHAVE PIX - 85985282207
-const makeBusinessSocket = require('@whiskeysockets/baileys')
-const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('@whiskeysockets/baileys')
+// const makeBusinessSocket = require('@whiskeysockets/baileys')
+const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState, makeBusinessSocket } = require('@whiskeysockets/baileys')
 
 const Boom = require('@hapi/boom');
 
