@@ -388,7 +388,7 @@ async function startSock() {
          if (Reconnect) {
             startSock()
             console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ` + DisconnectReason.loggedOut.toString());
-            console.log('connection closed due to', lastDisconnect.error, ', reconnecting', shouldReconnect);
+            console.log('connection closed due to', lastDisconnect.error, ', reconnecting', Reconnect);
          }
 
       }
