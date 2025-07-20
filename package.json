@@ -1,7 +1,9 @@
 {
   "name": "bot-baileys",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Bot WhatsApp integrado ao Dialogflow e Baileys",
+  "main": "server.js",
+  "type": "commonjs",
   "license": "ISC",
   "author": {
     "name": "Marcos Monteiro",
@@ -9,24 +11,27 @@
   },
   "scripts": {
     "start": "node server.js",
-    "app": "node ./server.js",
-    "test": "nodemon ./server.js"
+    "dev": "nodemon server.js",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
+    "@whiskeysockets/baileys": "^6.6.6", 
     "@adiwajshing/keyed-db": "^0.2.4",
     "@google-cloud/dialogflow": "^5.8.0",
-    "dialogflow-fulfillment": "^0.6.1",
-    "express": "^4.17.3",
-    "express-validator": "^6.14.0",
-    "pino": "^7.8.0",
-    "qrcode": "^1.5.0",
+    "express": "^4.18.2",
+    "express-validator": "^6.14.3",
+    "pino": "^7.11.0",
+    "qrcode": "^1.5.1",
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.7.2",
+    "dialogflow-fulfillment": "github:richardhpaul/dialogflow-fulfillment" 
   },
   "devDependencies": {
-    "@types/jest": "^27.4.1",
-    "nodemon": "^2.0.15"
+    "@types/jest": "^27.5.2",
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

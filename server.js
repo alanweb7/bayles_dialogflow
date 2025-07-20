@@ -22,7 +22,7 @@ app.use(express.urlencoded({
 }));
 
 /////INICIO DIALOGFLOW
-const sessionClient = new dialogflow.SessionsClient({ keyFilename: "SUA-CHAVE.json" });
+const sessionClient = new dialogflow.SessionsClient({ keyFilename: "baileys_bot.json" });
 async function detectIntent(projectId, sessionId, query, contexts, languageCode) {
    const sessionPath = sessionClient.projectAgentSessionPath(projectId, sessionId);
 
@@ -159,10 +159,10 @@ const Connection = async () => {
          let textResponse = "";
 
          if (messageType === "extendedTextMessage") {
-            textResponse = await executeQueries("ID-PROJETO", jid, [JSON.stringify(msg.message.extendedTextMessage.text)], 'pt-BR');
+            textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.extendedTextMessage.text)], 'pt-BR');
 
          } else if (messageType === "conversation") {
-            textResponse = await executeQueries("ID-PROJETO", jid, [JSON.stringify(msg.message.conversation)], 'pt-BR');
+            textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.conversation)], 'pt-BR');
 
          }
 
