@@ -1,7 +1,7 @@
 // CONTRIBUA COM O CONHECIMENTO...
 // CONSIDERE FAZER UMA COLABORAÇÃO VIA PIX.
 // CHAVE PIX - 85985282207
-const makeWaSocket = require('@whiskeysockets/baileys').default
+const makeBusinessSocket = require('@whiskeysockets/baileys')
 const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('@whiskeysockets/baileys')
 
 const Boom = require('@hapi/boom');
@@ -361,14 +361,9 @@ const Connection = async () => {
 // outra forma de conexão
 
 async function startSock() {
-
-   if (!existsSync(Path)) {
-      mkdirSync(Path, { recursive: true });
-   }
-
    const { state, saveCreds } = await useMultiFileAuthState('Sessions/user1');
 
-   const sock = makeWaSocket({
+   const sock = makeBusinessSocket({
       auth: state,
       printQRInTerminal: true,
    });
@@ -384,20 +379,15 @@ async function startSock() {
       };
 
       if (connection === 'close') {
-         const Reconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
-         if (Reconnect) {
-            startSock()
-            console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ` + DisconnectReason.loggedOut.toString());
-            console.log('connection closed due to', lastDisconnect.error, ', reconnecting', Reconnect);
+         const shouldReconnect = Boom.isBoom(lastDisconnect?.error)
+            ? lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut
+            : true;
+
+         console.log('connection closed due to', lastDisconnect.error, ', reconnecting', shouldReconnect);
+
+         if (shouldReconnect) {
+            startSock();
          }
-
-      }
-
-      if (
-         connection === 'close' &&
-         lastDisconnect?.error?.output?.payload?.message === 'Stream Errored (conflict)'
-      ) {
-         console.log('Sessão removida remotamente. Apague a pasta da sessão e escaneie novamente.');
       }
 
 
