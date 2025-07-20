@@ -11,9 +11,7 @@ const {
   isJidNewsletter,
 } = require('@whiskeysockets/baileys');
 
-const {
-  makeWASocket
-} = require("@whiskeysockets/baileys").default;
+const   makeWASocket  = require("@whiskeysockets/baileys");
 
 
 const dialogflow = require('@google-cloud/dialogflow');
