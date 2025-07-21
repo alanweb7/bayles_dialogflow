@@ -102,10 +102,15 @@ const SendMessage = async (jid, msg) => {
       let SetWait = await setDelay(5000, 7000);
       await delay(SetWait);
       await sockInstance.sendPresenceUpdate('composing', jid);
-      SetWait = await setDelay(10000, 15000);
       await delay(SetWait);
       await sockInstance.sendPresenceUpdate('paused', jid);
-      await sockInstance.sendMessage(jid, msg);
+      SetWait = await setDelay(2000, 3000);
+      await delay(SetWait);
+      await sockInstance.sendPresenceUpdate('composing', jid);
+      await delay(SetWait);
+      await sockInstance.sendPresenceUpdate('paused', jid);
+      
+      return await sockInstance.sendMessage(jid, msg);
    } catch (err) {
       console.error("Erro ao enviar mensagem:", err);
    }
