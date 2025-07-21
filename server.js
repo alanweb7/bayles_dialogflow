@@ -94,7 +94,7 @@ const Connection = async () => {
          console.log(`Comando: ${textResponse}`);
          console.log(`Texto: ${msgTxt}`);
 
-         // await SendMessage(jid, { text: 'Olá, tudo bem? 🤖' });
+         await SendMessage(jid, { text: 'Olá, tudo bem? 🤖' });
       }
    });
 };
@@ -110,7 +110,8 @@ const SendMessage = async (jid, msg) => {
       await sockInstance.presenceSubscribe(jid);
       await delay(1500);
       await sockInstance.sendPresenceUpdate('composing', jid);
-      await delay(10000);
+      let SetWait = setDelay(15000, 20000);
+      await delay(SetWait);
       await sockInstance.sendPresenceUpdate('paused', jid);
       await sockInstance.sendMessage(jid, msg);
    } catch (err) {
@@ -173,6 +174,12 @@ function sortearFrases(comando) {
 
    return sorteadas;
 
+}
+
+function setDelay(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
