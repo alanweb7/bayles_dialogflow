@@ -78,13 +78,13 @@ const Connection = async () => {
 
          console.log(`📩 Mensagem de ${nome} (${jid})`);
 
-         await SendMessage(sockInstance, socksaveCreds, jid, { text: 'Olá, tudo bem? 🤖' });
+         await SendMessage(jid, { text: 'Olá, tudo bem? 🤖' });
       }
    });
 };
 
 
-const SendMessage = async (sockInstance, socksaveCreds, jid, msg) => {
+const SendMessage = async (jid, msg) => {
    if (!sockInstance) {
       console.log("⚠️ Nenhuma instância ativa.");
       return;
@@ -96,10 +96,7 @@ const SendMessage = async (sockInstance, socksaveCreds, jid, msg) => {
       await sockInstance.sendPresenceUpdate('composing', jid);
       await delay(1000);
       await sockInstance.sendPresenceUpdate('paused', jid);
-
-      // Atualiza credenciais
-      sockInstance.ev.on('creds.update', socksaveCreds);
-      return await sockInstance.sendMessage(jid, msg);
+      await sockInstance.sendMessage(jid, msg);
    } catch (err) {
       console.error("Erro ao enviar mensagem:", err);
    }
