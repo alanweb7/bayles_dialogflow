@@ -98,9 +98,11 @@ const SendMessage = async (jid, msg) => {
 
    try {
       await sockInstance.presenceSubscribe(jid);
-      let SetWait = await setDelay(5000, 7000);
+      let SetWait = await setDelay(3000, 5000);
       await delay(SetWait);
       await sockInstance.sendPresenceUpdate('composing', jid);
+      let delayFrase = await calcularDelayPorFrase(frase);
+      console.log("Delay frase: ", delayFrase);
       await delay(SetWait);
       await sockInstance.sendPresenceUpdate('paused', jid);
       SetWait = await setDelay(2000, 3000);
@@ -178,5 +180,9 @@ function setDelay(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function calcularDelayPorFrase(frase) {
+  const tempoPorCaractere = 460; // em milissegundos (0.46s arredondado)
+  return frase.length * tempoPorCaractere;
+}
 
 module.exports = { Connection, SendMessage };
