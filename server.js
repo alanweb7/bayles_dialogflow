@@ -81,11 +81,11 @@ const Connection = async () => {
          let msgTxt = "";
 
          if (textResponse === "/comandos") {
-            msgTxt = `Você pode usar os comandos:
-            /comandos\n
-            /menu\n
-            /saudação\n
-            /cumprimentos\n`;
+            msgTxt = 'Você pode usar os comandos:'
+               + '/comandos'
+               + '/menu'
+               + '/saudação'
+               + '/cumprimentos';
 
          } else {
             msgTxt = await sortearFrases(textResponse);
