@@ -52,12 +52,10 @@ const Connection = async () => {
       auth: state,
       browser: ["Ubuntu", "Chrome", "103.0.0.0"], // forma direta
       browser: Browsers.ubuntu('AtendeAi24h'),
-      syncFullHistory: true
+      syncFullHistory: false
    };
 
    const sock = makeWASocket(WASocketConfig);
-
-
 
    sockInstance = sock;
    socksaveCreds = saveCreds;
@@ -78,7 +76,24 @@ const Connection = async () => {
 
          console.log(`📩 Mensagem de ${nome} (${jid})`);
 
-         await SendMessage(jid, { text: 'Olá, tudo bem? 🤖' });
+
+
+         let textResponse = "";
+
+         if (messageType === "extendedTextMessage") {
+            textResponse = JSON.stringify(msg.message.extendedTextMessage.text);
+
+         } else if (messageType === "conversation") {
+            textResponse = JSON.stringify(msg.message.conversation);
+
+         }
+
+         msgTxt = sortearFrases(textResponse);
+
+         console.log(`Comando: ${textResponse}`);
+         console.log(`Texto: ${msgTxt}`);
+
+         // await SendMessage(jid, { text: 'Olá, tudo bem? 🤖' });
       }
    });
 };
@@ -94,12 +109,68 @@ const SendMessage = async (jid, msg) => {
       await sockInstance.presenceSubscribe(jid);
       await delay(1500);
       await sockInstance.sendPresenceUpdate('composing', jid);
-      await delay(5000);
+      await delay(10000);
       await sockInstance.sendPresenceUpdate('paused', jid);
       await sockInstance.sendMessage(jid, msg);
    } catch (err) {
       console.error("Erro ao enviar mensagem:", err);
    }
 };
+
+
+function sortearFrases(comando) {
+   const frases = {
+      '/menu': [
+         '📋 Aqui está o nosso menu completo!',
+         '🛒 Escolha uma das opções abaixo:',
+         '📦 Produtos disponíveis no momento:',
+         '🔍 Confira nossos serviços:',
+         '👉 Clique em uma das opções do menu:',
+         '📱 Você pode navegar pelo menu abaixo:',
+         '🎯 Precisa de ajuda? Use o menu!',
+         '📌 Menu principal disponível!',
+         '🧭 Este é o caminho: menu abaixo!',
+         '📨 Menu enviado com sucesso!'
+      ],
+      '/saudação': [
+         '🌞 Bom dia! Como posso te ajudar?',
+         '🌅 Boa tarde! Tudo bem por aí?',
+         '🌙 Boa noite! Em que posso ser útil?',
+         '👋 Olá! Seja muito bem-vindo!',
+         '💬 Oi! Estou por aqui se precisar!',
+         '🤖 Olá! Posso ajudar com algo?',
+         '🙌 Que bom ter você aqui!',
+         '✅ Como posso te ajudar hoje?',
+         '✋ E aí! Tudo tranquilo?',
+         '💡 Pronto para começar?'
+      ],
+      '/oi': [
+         'Oi oi! 😄',
+         'E aí! 👋',
+         'Olá, tudo certo? 😎',
+         'Oi! Precisa de alguma informação?',
+         'Fala comigo! 🤖',
+         'Olá! Como posso ajudar?',
+         'Oi! Estou à disposição.',
+         'Alô! 📞',
+         'Chegou quem faltava! 👏',
+         'Olá, seja bem-vindo! 💬'
+      ]
+   };
+
+   if (!frases[comando]) {
+      return [`❌ Comando não reconhecido: ${comando}`];
+   }
+
+   const frasesDoComando = frases[comando];
+
+   // Sorteia 10 frases aleatórias (sem repetir)
+   const sorteadas = frasesDoComando
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 10);
+
+   return sorteadas;
+}
+
 
 module.exports = { Connection, SendMessage };
