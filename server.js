@@ -166,10 +166,10 @@ function sortearFrases(comando) {
 
    const frasesDoComando = frases[comando];
 
-   // Sorteia 10 frases aleatórias (sem repetir)
+   // Sorteia 1 frases aleatórias (sem repetir)
    const sorteadas = frasesDoComando
       .sort(() => 0.5 - Math.random())
-      .slice(0, 10);
+      .slice(0, 1);
 
    return sorteadas;
 
