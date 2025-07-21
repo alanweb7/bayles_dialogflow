@@ -99,14 +99,18 @@ const Update = (sock) => {
    })
 }
 
-const Connection = async () => {
-   const { version } = await fetchLatestBaileysVersion();
 
-   if (!existsSync(Path)) {
-      mkdirSync(Path, { recursive: true });
+// Caminho onde as credenciais serão armazenadas
+const SESSION_PATH = './Sessions/user1'; // pode ser dinâmico para múltiplas sessões
+
+const Connection = async () => {
+
+   if (!existsSync(SESSION_PATH)) {
+      mkdirSync(SESSION_PATH, { recursive: true });
    }
 
-   const { state, saveCreds } = await useMultiFileAuthState(Path);
+   const { state, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
+   const { version } = await fetchLatestBaileysVersion();
 
    const config = {
       auth: state,
@@ -123,8 +127,6 @@ const Connection = async () => {
 
    Update(sock.ev);
 
-   sock.ev.on('creds.update', saveCreds);
-
    const SendMessage = async (jid, msg) => {
       await sock.presenceSubscribe(jid)
       await delay(1500)
@@ -134,7 +136,7 @@ const Connection = async () => {
       return await sock.sendMessage(jid, msg)
    };
 
-
+   console.log('Mensagem enviada');
 
    ////SAUDAÇÃO
    let date = new Date();
@@ -355,6 +357,9 @@ const Connection = async () => {
       }
 
    });
+
+      // Atualiza credenciais após qualquer mudança
+   sock.ev.on('creds.update', saveCreds);
 
 };
 
