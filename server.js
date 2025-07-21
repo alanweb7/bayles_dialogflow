@@ -94,7 +94,7 @@ const SendMessage = async (jid, msg) => {
       await sockInstance.presenceSubscribe(jid);
       await delay(1500);
       await sockInstance.sendPresenceUpdate('composing', jid);
-      await delay(1000);
+      await delay(5000);
       await sockInstance.sendPresenceUpdate('paused', jid);
       await sockInstance.sendMessage(jid, msg);
    } catch (err) {
