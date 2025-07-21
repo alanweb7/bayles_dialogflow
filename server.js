@@ -32,27 +32,7 @@ const Update = (sock) => {
 };
 
 let sockInstance = null;
-
-const SendMessage = async (jid, msg) => {
-   if (!sockInstance) {
-      console.log("⚠️ Nenhuma instância ativa.");
-      return;
-   }
-
-   try {
-      await sockInstance.presenceSubscribe(jid);
-      await delay(1500);
-      await sockInstance.sendPresenceUpdate('composing', jid);
-      await delay(1000);
-      await sockInstance.sendPresenceUpdate('paused', jid);
-
-      // Atualiza credenciais
-      sockInstance.ev.on('creds.update', saveCreds);
-      return await sockInstance.sendMessage(jid, msg);
-   } catch (err) {
-      console.error("Erro ao enviar mensagem:", err);
-   }
-};
+let socksaveCreds = null;
 
 const Connection = async () => {
    const { state, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
@@ -80,6 +60,7 @@ const Connection = async () => {
 
 
    sockInstance = sock;
+   socksaveCreds = saveCreds;
 
    // Atualiza credenciais
    sock.ev.on('creds.update', saveCreds);
@@ -97,9 +78,31 @@ const Connection = async () => {
 
          console.log(`📩 Mensagem de ${nome} (${jid})`);
 
-         await SendMessage(jid, { text: 'Olá, tudo bem? 🤖' });
+         await SendMessage(sockInstance, socksaveCreds, jid, { text: 'Olá, tudo bem? 🤖' });
       }
    });
+};
+
+
+const SendMessage = async (sockInstance, socksaveCreds, jid, msg) => {
+   if (!sockInstance) {
+      console.log("⚠️ Nenhuma instância ativa.");
+      return;
+   }
+
+   try {
+      await sockInstance.presenceSubscribe(jid);
+      await delay(1500);
+      await sockInstance.sendPresenceUpdate('composing', jid);
+      await delay(1000);
+      await sockInstance.sendPresenceUpdate('paused', jid);
+
+      // Atualiza credenciais
+      sockInstance.ev.on('creds.update', socksaveCreds);
+      return await sockInstance.sendMessage(jid, msg);
+   } catch (err) {
+      console.error("Erro ao enviar mensagem:", err);
+   }
 };
 
 module.exports = { Connection, SendMessage };
