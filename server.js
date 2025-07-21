@@ -94,7 +94,7 @@ const Connection = async () => {
          console.log(`Comando: ${textResponse}`);
          console.log(`Texto: ${msgTxt}`);
 
-         await SendMessage(jid, { text: msgTxt });
+         await SendMessage(jid, { text: "Chegou quem faltava! 👏" });
       }
    });
 };
