@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { makeWASocket, UserFacingSocketConfig, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
+const { makeWASocket, Browsers,  UserFacingSocketConfig, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 const P = require('pino');
 const path = require('path');
