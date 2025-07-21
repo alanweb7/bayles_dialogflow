@@ -78,8 +78,19 @@ const Connection = async () => {
             textResponse = msg.message.conversation;
          }
 
+         let msgTxt = "";
 
-         let msgTxt = await sortearFrases(textResponse);
+         if (textResponse === "/comandos") {
+            msgTxt = `Você pode usar os comandos:
+                        /comandos
+                        /menu
+                        /saudação
+                        /cumprimentos`;
+
+         } else {
+            msgTxt = await sortearFrases(textResponse);
+         }
+
 
          console.log(`Comando: ${textResponse}`);
          console.log(`Texto: ${msgTxt}`);
@@ -100,8 +111,10 @@ const SendMessage = async (jid, msg) => {
       await sockInstance.presenceSubscribe(jid);
       let delayFrase = await calcularDelayPorFrase(msg.text);
       console.log("Delay frase: ", delayFrase);
+
       let SetWait = await getNumber(3000, 5000);
       await delay(SetWait);
+
       let repDelay = await getNumber(1, 3);
       for (let index = 0; index < repDelay; index++) {
          await sockInstance.sendPresenceUpdate('composing', jid);
@@ -134,7 +147,7 @@ function sortearFrases(comando) {
          '🧭 Este é o caminho: menu abaixo!',
          '📨 Menu enviado com sucesso!'
       ],
-      '\/saudação': [
+      '/saudação': [
          '🌞 Bom dia! Como posso te ajudar?',
          '🌅 Boa tarde! Tudo bem por aí?',
          '🌙 Boa noite! Em que posso ser útil?',
@@ -146,7 +159,7 @@ function sortearFrases(comando) {
          '✋ E aí! Tudo tranquilo?',
          '💡 Pronto para começar?'
       ],
-      '\/oi': [
+      '/cumprimentos': [
          'Oi oi! 😄',
          'E aí! 👋',
          'Olá, tudo certo? 😎',
