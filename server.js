@@ -1,371 +1,89 @@
-// CONTRIBUA COM O CONHECIMENTO...
-// CONSIDERE FAZER UMA COLABORAÇÃO VIA PIX.
-// CHAVE PIX - 85985282207
-const makeWaSocket = require('@whiskeysockets/baileys').default
-// const { makeBusinessSocket } = require('@whiskeysockets/baileys').default;
-const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState } = require('@whiskeysockets/baileys')
-
-const Boom = require('@hapi/boom');
-
-const dialogflow = require('@google-cloud/dialogflow');
-const P = require('pino')
-const { unlink, existsSync, mkdirSync } = require('fs')
-const express = require('express');
-const { body, validationResult } = require('express-validator');
-const http = require('http');
-const port = process.env.PORT || 9002;
-const app = express();
-const server = http.createServer(app);
-const Path = 'Sessions';
-const request = require('request')
-
-const qrcode = require('qrcode-terminal');
-
 const fs = require('fs');
-app.use(express.json());
-app.use(express.urlencoded({
-   extended: true
-}));
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
+const qrcode = require('qrcode-terminal');
+const P = require('pino');
+const path = require('path');
 
-/////INICIO DIALOGFLOW
-const sessionClient = new dialogflow.SessionsClient({ keyFilename: "baileys_bot.json" });
-async function detectIntent(projectId, sessionId, query, contexts, languageCode) {
-   const sessionPath = sessionClient.projectAgentSessionPath(projectId, sessionId);
-
-   // The text query request.
-   const request = {
-      session: sessionPath,
-      queryInput: {
-         text: {
-            text: query,
-            languageCode: languageCode,
-         },
-      },
-   };
-
-   if (contexts && contexts.length > 0) {
-      request.queryParams = {
-         contexts: contexts,
-      };
-   }
-
-   const responses = await sessionClient.detectIntent(request);
-   return responses[0];
-}
-
-async function executeQueries(projectId, sessionId, queries, languageCode) {
-   let context;
-   let intentResponse;
-   for (const query of queries) {
-      try {
-         console.log(`Pergunta: ${query}`);
-         intentResponse = await detectIntent(
-            projectId,
-            sessionId,
-            query,
-            context,
-            languageCode
-         );
-         console.log('Enviando Resposta');
-         console.log(intentResponse.queryResult.fulfillmentText);
-         return `${intentResponse.queryResult.fulfillmentText}`
-      } catch (error) {
-         console.log(error);
-      }
-   }
-} ////FIM DIALOGFLOW
+const SESSION_PATH = './Sessions/user1';
 
 const Update = (sock) => {
-   sock.on('connection.update', ({ connection, lastDisconnect, qr }) => {
+   sock.ev.on('connection.update', async ({ connection, lastDisconnect, qr }) => {
       if (qr) {
-         console.log('CHATBOT - Qrcode: ');
          qrcode.generate(qr, { small: true });
-      };
+      }
+
       if (connection === 'close') {
-         const Reconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
-         if (Reconnect) Connection()
-         console.log(`CHATBOT - CONEXÃO FECHADA! RAZÃO: ` + DisconnectReason.loggedOut.toString());
-         if (Reconnect === false) {
-            fs.rmSync(Path, { recursive: true, force: true });
-            // const removeAuth = Path
-            // unlink(removeAuth, err => {
-            //    if (err) throw err
-            // })
+         const shouldReconnect = (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut);
+         console.log("Conexão encerrada:", DisconnectReason[lastDisconnect?.error?.output?.statusCode] || 'Motivo desconhecido');
+
+         if (shouldReconnect) {
+            console.log("Reconectando...");
+            await Connection(); // ⚠️ Chamada recursiva segura
+         } else {
+            console.log("Desconectado permanentemente. Limpando sessão.");
+            fs.rmSync(SESSION_PATH, { recursive: true, force: true });
          }
       }
+
       if (connection === 'open') {
-         console.log('CHATBOT - CONECTADO')
+         console.log('✅ Conectado com sucesso!');
       }
-   })
-}
+   });
+};
 
+let sockInstance = null;
 
-// Caminho onde as credenciais serão armazenadas
-const SESSION_PATH = './Sessions/user1'; // pode ser dinâmico para múltiplas sessões
-
-const Connection = async () => {
-
-   if (!existsSync(SESSION_PATH)) {
-      mkdirSync(SESSION_PATH, { recursive: true });
+const SendMessage = async (jid, msg) => {
+   if (!sockInstance) {
+      console.log("⚠️ Nenhuma instância ativa.");
+      return;
    }
 
+   try {
+      await sockInstance.presenceSubscribe(jid);
+      await delay(1500);
+      await sockInstance.sendPresenceUpdate('composing', jid);
+      await delay(1000);
+      await sockInstance.sendPresenceUpdate('paused', jid);
+      return await sockInstance.sendMessage(jid, msg);
+   } catch (err) {
+      console.error("Erro ao enviar mensagem:", err);
+   }
+};
+
+const Connection = async () => {
    const { state, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
    const { version } = await fetchLatestBaileysVersion();
 
-   const config = {
-      auth: state,
-      logger: P({ level: 'error' }),
-      printQRInTerminal: true,
+   const sock = makeWASocket({
       version,
-      connectTimeoutMs: 60_000,
-      async getMessage(key) {
-         return { conversation: 'Chatbot' };
-      },
-   };
-
-   const sock = makeWaSocket(config, { auth: state });
-
-   Update(sock.ev);
-
-   const SendMessage = async (jid, msg) => {
-      await sock.presenceSubscribe(jid)
-      await delay(1500)
-      await sock.sendPresenceUpdate('composing', jid)
-      await delay(1000)
-      await sock.sendPresenceUpdate('paused', jid)
-      return await sock.sendMessage(jid, msg)
-   };
-
-   console.log('Mensagem enviada');
-
-   ////SAUDAÇÃO
-   let date = new Date();
-   let data = date.toLocaleString('pt-BR', { timeZone: "America/Sao_Paulo", hour: 'numeric', hour12: false });
-
-   function welcome() {
-      const hora = new Date().getHours();
-
-      if (hora >= 5 && hora < 12) {
-         return 'Bom dia!';
-      } else if (hora >= 12 && hora < 18) {
-         return 'Boa tarde!';
-      } else {
-         return 'Boa noite!';
-      }
-   }
-
-
-
-   /////////////////////INICIO DAS FUNÇÕES/////////////////////
-
-   sock.ev.on('messages.upsert', async ({ messages, type }) => {
-      const msg = messages[0]
-      const jid = msg.key.remoteJid
-      const nomeUsuario = msg.pushName
-      const saudacao = welcome();
-      if ((jid) && !msg.key.fromMe && jid !== 'status@broadcast') {
-         const messageTypes = Object.keys(msg.message);
-         const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
-
-         let textResponse = "oie tudo bom?";
-
-         // if (messageType === "extendedTextMessage") {
-         //    textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.extendedTextMessage.text)], 'pt-BR');
-
-         // } else if (messageType === "conversation") {
-         //    textResponse = await executeQueries("baileysagente-kjxn", jid, [JSON.stringify(msg.message.conversation)], 'pt-BR');
-
-         // }
-
-
-         if (textResponse) {
-            const objJson = JSON.stringify(msg);
-
-            console.log(`Mensagem recebida de ${jid}: ${objJson}`);
-            // await SendMessage(jid, { text: textResponse });
-
-
-            // await SendMessage(jid, {
-            //    text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
-            //       "1 - CONTINUAR \n" +
-            //       "2 - SAIR"
-            // })
-            // return false;
-         }
-
-
-
-         //--------------------
-
-         // MENSAGEM DE BOAS VINDAS (TEXO COM IMAGEM)
-         if (textResponse === 'Iniciando seu atendimento...') {
-            await SendMessage(jid, {
-               image: {
-                  url: './image/robert.jpg'
-               },
-               caption: `Olá ${nomeUsuario}, ${saudacao} \nSeja muito bem-vindo ao assistente virtual do *Canal eConhecimento*.\n\n` +
-                  "Digite o *número* referente a opção desejada:\n\n" +
-                  "*1* - Suporte\n" +
-                  "*2* - Financeiro\n" +
-                  "*3* - Cursos Online\n" +
-                  "*4* - Perguntas frequentes\n" +
-                  "*5* - Redes sociais\n" +
-                  "*6* - Parceria",
-               mimeType: 'image.jpg'
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-
-         //--------------------
-
-         // MENSAGEM DE TEXO COMUM
-         if (textResponse === 'Enviando texto comum...') {
-            await SendMessage(jid, {
-               text: `Olá *${nomeUsuario}* ${saudacao} \n Essa é uma mensagem de texto comum\n\n ` +
-                  "1 - CONTINUAR \n" +
-                  "2 - SAIR"
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM COM ÁUDIO
-         if (textResponse === 'Envio de áudio...') {
-            await SendMessage(jid, {
-               audio: {
-                  url: './image/teste.ogg'
-               },
-               caption: 'Descrição do áudio',
-               mimetype: 'audio/ogg'
-
-            });
-            await SendMessage(jid, {
-               text: `Olá *${nomeUsuario}* \n Essa é uma mensagem de áudio\n\n ` +
-                  "1 - CONTINUAR \n" +
-                  "2 - SAIR"
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM COM VÍDEO
-         if (textResponse === 'Envio de vídeo...') {
-            await SendMessage(jid, {
-               video: {
-                  url: './image/video.mp4'
-               },
-               caption: 'Esse é um exemplo de vídeo',
-               gifPlayback: true
-
-            });
-            await SendMessage(jid, {
-               text: `Olá *${nomeUsuario}* \n Essa é uma mensagem de vídeo\n\n ` +
-                  "1 - CONTINUAR \n" +
-                  "2 - SAIR"
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM COM DOCUMENTO PDF
-         if (textResponse === 'Aqui está um PDF 👇🏼😉') {
-            await SendMessage(jid, {
-               document: {
-                  url: './image/Divulg-pro.pdf'
-               },
-               fileName: '/Divulg-pro.pdf',
-               caption:
-                  "Tabela de valores",
-               mimetype: 'application/PDF'
-
-            })
-
-            await SendMessage(jid, {
-               text: //`Olá *${nomeUsuario}* \nEssa é uma mensagem de vídeo\n\n`+
-                  //"1 - CONTINUAR\n" +
-                  "*0* - Voltar ao menu"
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM DE LOCALIZAÇÃO
-         if (textResponse === 'Enviando Localização, Aguarde!...') {
-            await SendMessage(jid, { location: { degreesLatitude: -2.917264183502438, degreesLongitude: -41.75231474744193 } }
-            )
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err))
-
-         }
-
-         //--------------------
-
-         // MENSAGEM DE CONTATO
-         if (textResponse === 'Aqui está o contato do Marcos Monteiro 👇🏼😉') {
-            const vcard = 'BEGIN:VCARD\n' // metadata of the contact card
-               + 'VERSION:3.0\n'
-               + 'FN:Marcos Monteiro\n' // full name
-               + 'ORG:Marcos Monteiro;\n' // the organization of the contact
-               + 'TEL;type=CELL;type=VOICE;waid=5585985282207:+55 85 98528 2207\n' // WhatsApp ID + phone number
-               + 'END:VCARD';
-
-            await SendMessage(jid, {
-               contacts: {
-                  displayName: 'Marcos Monteiro',
-                  contacts: [{ vcard }]
-
-               }
-
-            });
-
-            await SendMessage(jid, {
-               text: '*0* - Voltar ao menu'
-
-            })
-
-               .then(result => console.log('RESULT: ', result))
-               .catch(err => console.log('ERROR: ', err));
-
-         }
-
-
-      }
-
+      logger: P({ level: 'silent' }),
+      printQRInTerminal: false,
+      auth: state,
+      getMessage: async (key) => ({ conversation: "Mensagem offline" }),
    });
 
-      // Atualiza credenciais após qualquer mudança
+   sockInstance = sock;
+
+   // Atualiza credenciais
    sock.ev.on('creds.update', saveCreds);
 
+   // Lida com atualização de conexão
+   Update(sock);
+
+   // Escuta mensagens
+   sock.ev.on('messages.upsert', async ({ messages }) => {
+      const msg = messages[0];
+      const jid = msg.key.remoteJid;
+
+      if (!msg.key.fromMe && jid !== 'status@broadcast') {
+         const nome = msg.pushName || "Usuário";
+
+         console.log(`📩 Mensagem de ${nome} (${jid})`);
+
+         await SendMessage(jid, { text: 'Olá, tudo bem? 🤖' });
+      }
+   });
 };
 
-Connection()
-
-server.listen(port, function () {
-   console.log('CHATBOT - Servidor rodando na porta: ' + port);
-
-});
+module.exports = { Connection, SendMessage };
