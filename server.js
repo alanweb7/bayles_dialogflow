@@ -98,19 +98,21 @@ const SendMessage = async (jid, msg) => {
 
    try {
       await sockInstance.presenceSubscribe(jid);
-      let SetWait = await setDelay(3000, 5000);
-      await delay(SetWait);
-      await sockInstance.sendPresenceUpdate('composing', jid);
       let delayFrase = await calcularDelayPorFrase(msg.text);
       console.log("Delay frase: ", delayFrase);
+      let SetWait = await getNumber(3000, 5000);
       await delay(SetWait);
-      await sockInstance.sendPresenceUpdate('paused', jid);
-      SetWait = await setDelay(2000, 3000);
-      await delay(SetWait);
-      await sockInstance.sendPresenceUpdate('composing', jid);
-      await delay(SetWait);
-      await sockInstance.sendPresenceUpdate('paused', jid);
-      
+      let repDelay = await getNumber(1, 3);
+      for (let index = 0; index < repDelay; index++) {
+         await sockInstance.sendPresenceUpdate('composing', jid);
+         await delay(Math.floor(delayFrase / repDelay));
+         await sockInstance.sendPresenceUpdate('paused', jid);
+         if (repDelay > 1) {
+            SetWait = await getNumber(2000, 3000);
+            await delay(SetWait);
+         }
+      }
+
       return await sockInstance.sendMessage(jid, msg);
    } catch (err) {
       console.error("Erro ao enviar mensagem:", err);
@@ -174,15 +176,15 @@ function sortearFrases(comando) {
 
 }
 
-function setDelay(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getNumber(min, max) {
+   min = Math.ceil(min);
+   max = Math.floor(max);
+   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function calcularDelayPorFrase(frase) {
-  const tempoPorCaractere = 460; // em milissegundos (0.46s arredondado)
-  return frase.length * tempoPorCaractere;
+   const tempoPorCaractere = 460; // em milissegundos (0.46s arredondado)
+   return frase.length * tempoPorCaractere;
 }
 
 module.exports = { Connection, SendMessage };
