@@ -38,15 +38,6 @@ const Connection = async () => {
    const { state, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
    const { version } = await fetchLatestBaileysVersion();
 
-   // const sock = makeWASocket({
-   //    version,
-   //    logger: P({ level: 'silent' }),
-   //    auth: state,
-   //    mobile: true,
-   //    getMessage: async (key) => ({ conversation: "Mensagem offline" }),
-   // });
-
-
    const WASocketConfig = {
       version,
       auth: state,
@@ -109,7 +100,7 @@ const SendMessage = async (jid, msg) => {
    try {
       await sockInstance.presenceSubscribe(jid);
       let SetWait = await setDelay(5000, 7000);
-      await delay(1500);
+      await delay(SetWait);
       await sockInstance.sendPresenceUpdate('composing', jid);
       SetWait = await setDelay(10000, 15000);
       await delay(SetWait);
