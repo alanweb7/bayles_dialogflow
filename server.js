@@ -101,7 +101,7 @@ const SendMessage = async (jid, msg) => {
       let SetWait = await setDelay(3000, 5000);
       await delay(SetWait);
       await sockInstance.sendPresenceUpdate('composing', jid);
-      let delayFrase = await calcularDelayPorFrase(frase);
+      let delayFrase = await calcularDelayPorFrase(msg.text);
       console.log("Delay frase: ", delayFrase);
       await delay(SetWait);
       await sockInstance.sendPresenceUpdate('paused', jid);
