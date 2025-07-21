@@ -50,9 +50,7 @@ const Connection = async () => {
    const WASocketConfig = {
       version,
       auth: state,
-      browser: ["Ubuntu", "Chrome", "103.0.0.0"], // forma direta
-      browser: Browsers.ubuntu('AtendeAi24h'),
-      syncFullHistory: false
+      browser: Browsers.ubuntu('AtendeAi24h')
    };
 
    const sock = makeWASocket(WASocketConfig);
@@ -123,7 +121,7 @@ const SendMessage = async (jid, msg) => {
 
 function sortearFrases(comando) {
    const frases = {
-      '/menu': [
+      'menu': [
          '📋 Aqui está o nosso menu completo!',
          '🛒 Escolha uma das opções abaixo:',
          '📦 Produtos disponíveis no momento:',
@@ -135,7 +133,7 @@ function sortearFrases(comando) {
          '🧭 Este é o caminho: menu abaixo!',
          '📨 Menu enviado com sucesso!'
       ],
-      '/saudação': [
+      '\/saudação': [
          '🌞 Bom dia! Como posso te ajudar?',
          '🌅 Boa tarde! Tudo bem por aí?',
          '🌙 Boa noite! Em que posso ser útil?',
@@ -147,7 +145,7 @@ function sortearFrases(comando) {
          '✋ E aí! Tudo tranquilo?',
          '💡 Pronto para começar?'
       ],
-      '/oi': [
+      '\/oi': [
          'Oi oi! 😄',
          'E aí! 👋',
          'Olá, tudo certo? 😎',
