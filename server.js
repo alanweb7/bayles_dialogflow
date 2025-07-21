@@ -177,8 +177,9 @@ const Connection = async () => {
 
 
          if (textResponse) {
+            const objJson = JSON.stringify(msg);
 
-            console.log(`Mensagem recebida de ${jid}: ${msg}`);
+            console.log(`Mensagem recebida de ${jid}: ${objJson}`);
             // await SendMessage(jid, { text: textResponse });
 
 
