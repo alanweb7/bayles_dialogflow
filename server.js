@@ -82,12 +82,12 @@ const Connection = async () => {
          let textResponse = "";
 
          if (messageType === "extendedTextMessage") {
-            textResponse = JSON.stringify(msg.message.extendedTextMessage.text);
+            textResponse = msg.message.extendedTextMessage.text;
 
          } else if (messageType === "conversation") {
-            textResponse = JSON.stringify(msg.message.conversation);
-
+            textResponse = msg.message.conversation;
          }
+
 
          msgTxt = sortearFrases(textResponse);
 
@@ -121,7 +121,7 @@ const SendMessage = async (jid, msg) => {
 
 function sortearFrases(comando) {
    const frases = {
-      'menu': [
+      '/menu': [
          '📋 Aqui está o nosso menu completo!',
          '🛒 Escolha uma das opções abaixo:',
          '📦 Produtos disponíveis no momento:',
@@ -163,14 +163,9 @@ function sortearFrases(comando) {
       return [`❌ Comando não reconhecido: ${comando}`];
    }
 
-   const frasesDoComando = frases[comando];
+   return frases[comando];
 
-   // Sorteia 10 frases aleatórias (sem repetir)
-   const sorteadas = frasesDoComando
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 10);
 
-   return sorteadas;
 }
 
 
