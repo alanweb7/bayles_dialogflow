@@ -1,3 +1,3 @@
-const { Connection } = require('./baylesService.js');
+const { Connection } = require('./server.js');
 
 Connection();
