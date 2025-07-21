@@ -89,7 +89,7 @@ const Connection = async () => {
          }
 
 
-         msgTxt = sortearFrases(textResponse);
+         msgTxt = await sortearFrases(textResponse);
 
          console.log(`Comando: ${textResponse}`);
          console.log(`Texto: ${msgTxt}`);
@@ -108,9 +108,10 @@ const SendMessage = async (jid, msg) => {
 
    try {
       await sockInstance.presenceSubscribe(jid);
+      let SetWait = await setDelay(5000, 7000);
       await delay(1500);
       await sockInstance.sendPresenceUpdate('composing', jid);
-      let SetWait = setDelay(15000, 20000);
+      SetWait = await setDelay(10000, 15000);
       await delay(SetWait);
       await sockInstance.sendPresenceUpdate('paused', jid);
       await sockInstance.sendMessage(jid, msg);
