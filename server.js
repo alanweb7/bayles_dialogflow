@@ -81,10 +81,10 @@ const Connection = async () => {
          let msgTxt = "";
 
          if (textResponse === "/comandos") {
-            msgTxt = 'Você pode usar os comandos:'
-               + '/comandos'
-               + '/menu'
-               + '/saudação'
+            msgTxt = 'Você pode usar os comandos:\n'
+               + '/comandos\n'
+               + '/menu\n'
+               + '/saudação\n'
                + '/cumprimentos';
 
          } else {
