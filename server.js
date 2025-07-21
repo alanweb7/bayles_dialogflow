@@ -60,6 +60,7 @@ const Connection = async () => {
       logger: P({ level: 'silent' }),
       printQRInTerminal: false,
       auth: state,
+      mobile: true,
       getMessage: async (key) => ({ conversation: "Mensagem offline" }),
    });
 
