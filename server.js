@@ -163,8 +163,15 @@ function sortearFrases(comando) {
       return [`❌ Comando não reconhecido: ${comando}`];
    }
 
-   return frases[comando];
 
+   const frasesDoComando = frases[comando];
+
+   // Sorteia 10 frases aleatórias (sem repetir)
+   const sorteadas = frasesDoComando
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 10);
+
+   return sorteadas;
 
 }
 
