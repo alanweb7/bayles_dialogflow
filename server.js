@@ -66,9 +66,9 @@ const Connection = async () => {
 
    const WASocketConfig = {
       version,
-      printQRInTerminal: false,
       auth: state,
-      mobile: true,
+      browser: Browsers.macOS('Desktop'),
+      syncFullHistory: true
    };
 
    const sock = makeWASocket(WASocketConfig);
