@@ -82,10 +82,10 @@ const Connection = async () => {
 
          if (textResponse === "/comandos") {
             msgTxt = `Você pode usar os comandos:
-                        /comandos
-                        /menu
-                        /saudação
-                        /cumprimentos`;
+            /comandos\n
+            /menu\n
+            /saudação\n
+            /cumprimentos\n`;
 
          } else {
             msgTxt = await sortearFrases(textResponse);
