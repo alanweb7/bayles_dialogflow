@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
+const { makeWASocket, UserFacingSocketConfig, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 const P = require('pino');
 const path = require('path');
@@ -55,14 +55,25 @@ const Connection = async () => {
    const { state, saveCreds } = await useMultiFileAuthState(SESSION_PATH);
    const { version } = await fetchLatestBaileysVersion();
 
-   const sock = makeWASocket({
+   // const sock = makeWASocket({
+   //    version,
+   //    logger: P({ level: 'silent' }),
+   //    auth: state,
+   //    mobile: true,
+   //    getMessage: async (key) => ({ conversation: "Mensagem offline" }),
+   // });
+
+
+   const WASocketConfig = {
       version,
-      logger: P({ level: 'silent' }),
       printQRInTerminal: false,
       auth: state,
       mobile: true,
-      getMessage: async (key) => ({ conversation: "Mensagem offline" }),
-   });
+   };
+
+   const sock = makeWASocket(WASocketConfig);
+
+
 
    sockInstance = sock;
 
