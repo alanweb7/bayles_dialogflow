@@ -89,12 +89,12 @@ const Connection = async () => {
          }
 
 
-         msgTxt = await sortearFrases(textResponse);
+         let msgTxt = await sortearFrases(textResponse);
 
          console.log(`Comando: ${textResponse}`);
          console.log(`Texto: ${msgTxt}`);
 
-         await SendMessage(jid, { text: "Chegou quem faltava! 👏" });
+         await SendMessage(jid, { text: `${msgTxt}` });
       }
    });
 };
