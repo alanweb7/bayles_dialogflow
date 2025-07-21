@@ -72,6 +72,9 @@ const Connection = async () => {
       const jid = msg.key.remoteJid;
 
       if (!msg.key.fromMe && jid !== 'status@broadcast') {
+         const messageTypes = Object.keys(msg.message);
+         const messageType = messageTypes.find((t) => ['conversation', 'stickerMessage', 'videoMessage', 'imageMessage', 'documentMessage', 'locationMessage', 'extendedTextMessage', 'audioMessage'].includes(t));
+
          const nome = msg.pushName || "Usuário";
 
          console.log(`📩 Mensagem de ${nome} (${jid})`);
