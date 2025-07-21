@@ -47,7 +47,7 @@ const SendMessage = async (jid, msg) => {
       await sockInstance.sendPresenceUpdate('paused', jid);
 
       // Atualiza credenciais
-      sock.ev.on('creds.update', saveCreds);
+      sockInstance.ev.on('creds.update', saveCreds);
       return await sockInstance.sendMessage(jid, msg);
    } catch (err) {
       console.error("Erro ao enviar mensagem:", err);
