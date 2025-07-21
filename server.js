@@ -67,7 +67,7 @@ const Connection = async () => {
    const WASocketConfig = {
       version,
       auth: state,
-      browser: Browsers.macOS('Desktop'),
+      browser: Browsers.ubuntu('AtendeAi24h'),
       syncFullHistory: true
    };
 
