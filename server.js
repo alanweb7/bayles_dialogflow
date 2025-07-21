@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { makeWASocket, Browsers,  UserFacingSocketConfig, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
+const { makeWASocket, Browsers, UserFacingSocketConfig, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 const P = require('pino');
 const path = require('path');
@@ -45,6 +45,9 @@ const SendMessage = async (jid, msg) => {
       await sockInstance.sendPresenceUpdate('composing', jid);
       await delay(1000);
       await sockInstance.sendPresenceUpdate('paused', jid);
+
+      // Atualiza credenciais
+      sock.ev.on('creds.update', saveCreds);
       return await sockInstance.sendMessage(jid, msg);
    } catch (err) {
       console.error("Erro ao enviar mensagem:", err);
@@ -67,6 +70,7 @@ const Connection = async () => {
    const WASocketConfig = {
       version,
       auth: state,
+      browser: ["Ubuntu", "Chrome", "103.0.0.0"], // forma direta
       browser: Browsers.ubuntu('AtendeAi24h'),
       syncFullHistory: true
    };
